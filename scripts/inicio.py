@@ -100,6 +100,7 @@ class QuectelWorker(QObject):
                 self.progress.emit(diccionario)
             else:
                 print("Error en el comando AT")
+                print(respuesta)
                 diccionario['AT'] = respuesta.decode()
                 self.progress.emit(diccionario)
 
@@ -190,16 +191,23 @@ class principal(QMainWindow):
     def reportProgressQuectel(self, res: dict):
         try:
             if 'OK' in res["AT"]:
+                self.label_estado_quectel.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                 self.label_estado_quectel.setText("Iniciando...")
+                self.label_estado_quectel.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                 self.label_intensidad_sim.setText(res["CSQ"])
                 if ("error" not in res.keys()):
+                    self.label_latitud.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                     self.label_latitud.setText(res["Latitud"])
+                    self.label_longitud.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                     self.label_longitud.setText(res["Longitud"])
                 else:
+                    self.label_latitud.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
                     self.label_latitud.setText(res["error"])
+                self.label_numero_sim.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                 self.label_numero_sim.setText(res["CCID"])
             else:
-                self.label_estado_quectel.setText("Error")
+                self.label_estado_quectel.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
+                self.label_estado_quectel.setText(res["AT"])
         except Exception as e:
             print("inicio.py, linea 160: "+str(e))
         
