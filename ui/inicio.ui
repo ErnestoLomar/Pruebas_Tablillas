@@ -147,7 +147,7 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>450</x>
       <y>170</y>
       <width>161</width>
       <height>31</height>
@@ -163,7 +163,7 @@
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>450</x>
       <y>200</y>
       <width>161</width>
       <height>31</height>
@@ -179,7 +179,7 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>450</x>
       <y>250</y>
       <width>171</width>
       <height>31</height>
@@ -195,7 +195,7 @@
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>450</x>
       <y>280</y>
       <width>161</width>
       <height>31</height>
@@ -211,7 +211,7 @@
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>450</x>
       <y>340</y>
       <width>161</width>
       <height>31</height>
@@ -396,9 +396,9 @@
    <widget class="QLabel" name="label_intensidad_sim">
     <property name="geometry">
      <rect>
-      <x>650</x>
+      <x>630</x>
       <y>180</y>
-      <width>81</width>
+      <width>101</width>
       <height>31</height>
      </rect>
     </property>
@@ -412,9 +412,9 @@
    <widget class="QLabel" name="label_latitud">
     <property name="geometry">
      <rect>
-      <x>650</x>
+      <x>630</x>
       <y>250</y>
-      <width>141</width>
+      <width>161</width>
       <height>31</height>
      </rect>
     </property>
@@ -428,9 +428,9 @@
    <widget class="QLabel" name="label_longitud">
     <property name="geometry">
      <rect>
-      <x>650</x>
+      <x>630</x>
       <y>280</y>
-      <width>141</width>
+      <width>161</width>
       <height>31</height>
      </rect>
     </property>
@@ -444,9 +444,9 @@
    <widget class="QLabel" name="label_numero_sim">
     <property name="geometry">
      <rect>
-      <x>650</x>
+      <x>630</x>
       <y>340</y>
-      <width>151</width>
+      <width>171</width>
       <height>31</height>
      </rect>
     </property>
