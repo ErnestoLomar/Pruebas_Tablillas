@@ -97,8 +97,7 @@ class QuectelWorker(QObject):
                 else:
                     comando = respuesta.replace("+CME ERROR: ", "")
                     comando = comando.rstrip("\r\n")
-                    diccionario['CCID'] = comando
-                    diccionario['error'] = respuesta.decode()
+                    diccionario['error'] = comando
                     
                 self.ser.flushInput()
                 self.ser.flushOutput()
