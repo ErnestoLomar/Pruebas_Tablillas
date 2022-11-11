@@ -53,6 +53,7 @@ class QuectelWorker(QObject):
             comando = "AT\r\n"
             print("Enviando comando: " + comando)
             self.ser.write(comando.encode())
+            self.ser.readline()
             time.sleep(1)
             respuesta = self.ser.readline()
             if 'OK' in respuesta.decode():
@@ -65,6 +66,7 @@ class QuectelWorker(QObject):
                 comando = "AT+CSQ\r\n"
                 print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
+                self.ser.readline()
                 time.sleep(1)
                 respuesta = self.ser.readline()
                 diccionario['CSQ'] = respuesta.decode()
@@ -74,6 +76,7 @@ class QuectelWorker(QObject):
                 comando = "AT+QGPSLOC=2\r\n"
                 print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
+                self.ser.readline()
                 time.sleep(1)
                 respuesta = self.ser.readline()
                 Tam = len(respuesta.decode())
@@ -92,6 +95,7 @@ class QuectelWorker(QObject):
                 comando = "AT+CCID\r\n"
                 print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
+                self.ser.readline()
                 time.sleep(1)
                 respuesta = self.ser.readline()
                 diccionario['CCID'] = respuesta.decode()
