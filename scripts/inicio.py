@@ -68,8 +68,15 @@ class QuectelWorker(QObject):
                 self.ser.write(comando.encode())
                 self.ser.readline()
                 time.sleep(1)
-                respuesta = self.ser.readline()
-                diccionario['CSQ'] = respuesta.decode()
+                respuesta = self.ser.readline().decode()
+                if(respuesta.startswith("+CSQ: ")):
+                    comando = respuesta.replace("+CSQ: ", "")
+                    comando = comando.rstrip("\r\n")
+                    comando = comando[:-3]
+                    respuesta = float(comando)
+                    diccionario['CSQ'] = str(respuesta)
+                else:
+                    diccionario['CSQ'] = respuesta
                 
                 self.ser.flushInput()
                 self.ser.flushOutput()
@@ -97,8 +104,13 @@ class QuectelWorker(QObject):
                 self.ser.write(comando.encode())
                 self.ser.readline()
                 time.sleep(1)
-                respuesta = self.ser.readline()
-                diccionario['CCID'] = respuesta.decode()
+                respuesta = self.ser.readline().decode()
+                if(respuesta.startswith("+CCID: ")):
+                    comando = respuesta.replace("+CCID: ", "")
+                    comando = comando.rstrip("\r\n")
+                    diccionario['CCID'] = comando
+                else:
+                    diccionario['CCID'] = respuesta
                 
                 print("Finalizando prueba Quectel")
                 self.progress.emit(diccionario)
@@ -197,18 +209,20 @@ class principal(QMainWindow):
             if 'OK' in res["AT"]:
                 self.label_estado_quectel.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                 self.label_estado_quectel.setText("Iniciando...")
-                self.label_estado_quectel.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
-                self.label_intensidad_sim.setText(res["CSQ"])
-                if ("error" not in res.keys()):
-                    self.label_latitud.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
-                    self.label_latitud.setText(res["Latitud"])
-                    self.label_longitud.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
-                    self.label_longitud.setText(res["Longitud"])
-                else:
-                    self.label_latitud.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
-                    self.label_latitud.setText(res["error"])
-                self.label_numero_sim.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
-                self.label_numero_sim.setText(res["CCID"])
+                if ("CSQ" in res.keys()):
+                    self.label_intensidad_sim.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
+                    self.label_intensidad_sim.setText(res["CSQ"])
+                    if ("error" not in res.keys()):
+                        self.label_latitud.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
+                        self.label_latitud.setText(res["Latitud"])
+                        self.label_longitud.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
+                        self.label_longitud.setText(res["Longitud"])
+                    else:
+                        self.label_latitud.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
+                        self.label_latitud.setText(res["error"])
+                    if ("CCID" in res.keys()):
+                        self.label_numero_sim.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
+                        self.label_numero_sim.setText(res["CCID"])
             else:
                 self.label_estado_quectel.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
                 self.label_estado_quectel.setText(res["AT"])
