@@ -55,8 +55,8 @@ class QuectelWorker(QObject):
             self.ser.write(comando.encode())
             time.sleep(1)
             respuesta = self.ser.readline()
-            diccionario['AT'] = respuesta.decode()
             if 'OK' in respuesta.decode():
+                diccionario['AT'] = respuesta.decode()
                 
                 self.ser.readline()
                 self.ser.readline()
@@ -97,10 +97,11 @@ class QuectelWorker(QObject):
                 diccionario['CCID'] = respuesta.decode()
                 
                 print("Finalizando prueba Quectel")
-                return diccionario
+                self.progress.emit(diccionario)
             else:
                 print("Error en el comando AT")
                 diccionario['AT'] = respuesta.decode()
+                self.progress.emit(diccionario)
 
 class principal(QMainWindow):
     def __init__(self):
