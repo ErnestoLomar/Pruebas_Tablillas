@@ -16,6 +16,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
+import serial
 from eeprom_num_serie import cargar_num_serie
 
 class RFIDWorker(QObject):
@@ -34,6 +35,68 @@ class RFIDWorker(QObject):
             if "UID" in estado.stdout.decode():
                 print("Finalizando prueba RFID")
                 break
+            
+class QuectelWorker(QObject):
+    def __init__(self, ser):
+        super().__init__()
+        self.ser = ser
+    
+    finished = pyqtSignal()
+    progress = pyqtSignal(dict)
+    
+    def run(self):
+        diccionario = {}
+        while True:
+            self.ser.flushInput()
+            self.ser.flushOutput()
+            comando = "AT\r\n"
+            self.ser.readline()
+            self.ser.write(comando.encode())
+            time.sleep(1)
+            print(self.ser.readline())
+            respuesta = self.ser.readline()
+            diccionario['AT'] = respuesta.decode()
+            if 'OK' in respuesta.decode():
+                
+                self.ser.readline()
+                self.ser.readline()
+                self.ser.flushInput()
+                self.ser.flushOutput()
+                comando = "AT+CSQ\r\n"
+                self.ser.write(comando.encode())
+                time.sleep(1)
+                respuesta = self.ser.readline()
+                diccionario['CSQ'] = respuesta.decode()
+                
+                self.ser.flushInput()
+                self.ser.flushOutput()
+                comando = "AT+QGPSLOC=2\r\n"
+                self.ser.write(comando.encode())
+                time.sleep(1)
+                respuesta = self.ser.readline()
+                Tam = len(respuesta.decode())
+                if Tam > 27:
+                    Cortada = respuesta.decode()
+                    aux1 = Cortada.split(",")
+                    Latitud = aux1[1]
+                    Longitud = aux1[2]
+                    diccionario['Latitud'] = Latitud
+                    diccionario['Longitud'] = Longitud
+                else:
+                    diccionario['error'] = respuesta.decode()
+                    
+                self.ser.flushInput()
+                self.ser.flushOutput()
+                comando = "AT+CCID\r\n"
+                self.ser.write(comando.encode())
+                time.sleep(1)
+                respuesta = self.ser.readline()
+                diccionario['CCID'] = respuesta.decode()
+                
+                return diccionario
+            else:
+                print("Error en el comando AT")
+                diccionario['AT'] = respuesta.decode()
 
 class principal(QMainWindow):
     def __init__(self):
@@ -55,6 +118,13 @@ class principal(QMainWindow):
         
         # Iniciamos prueba de RFID
         self.runRFID()
+        
+        # Iniciamos comunicación con serial
+        try:
+            self.ser = serial.Serial('/dev/serial0', 115200, timeout=1)
+        except Exception as e:
+            print("Error al abrir el puerto serial: ", e)
+            self.label_estado_quectel.setTexts(str(e))
         
     def verificar_memoria_eeprom(self):
         estado = cargar_num_serie()
@@ -94,6 +164,36 @@ class principal(QMainWindow):
                 time.sleep(.5)
                 self.label_resultado_rfid.setPixmap(QPixmap("../img/incorrecto.png"))
                 print("RFID incorrecto")
+        except Exception as e:
+            print("inicio.py, linea 160: "+str(e))
+            
+    def runQuectel(self):
+        try:
+            self.quectelThread = QThread()
+            self.quectelWorker = QuectelWorker(self.ser)
+            self.quectelWorker.moveToThread(self.quectelThread)
+            self.quectelThread.started.connect(self.quectelWorker.run)
+            self.quectelWorker.finished.connect(self.quectelThread.quit)
+            self.quectelWorker.finished.connect(self.quectelWorker.deleteLater)
+            self.quectelThread.finished.connect(self.quectelThread.deleteLater)
+            self.quectelWorker.progress.connect(self.reportProgressQuectel)
+            self.quectelThread.start()
+        except Exception as e:
+            print("Error al iniciar el hilo de minicom: " + str(e))
+            
+    def reportProgressQuectel(self, res: dict):
+        try:
+            if 'OK' in res["AT"]:
+                self.label_estado_quectel.setText("Iniciando...")
+                self.label_intensidad_sim.setText(res["CSQ"])
+                if ("error" not in res.keys()):
+                    self.label_latitud.setText(res["Latitud"])
+                    self.label_longitud.setText(res["Longitud"])
+                else:
+                    self.label_latitud.setText(res["error"])
+                self.label_numero_sim.setText(res["CCID"])
+            else:
+                self.label_estado_quectel.setText("Error")
         except Exception as e:
             print("inicio.py, linea 160: "+str(e))
         
