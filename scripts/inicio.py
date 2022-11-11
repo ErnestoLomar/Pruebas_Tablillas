@@ -122,6 +122,7 @@ class principal(QMainWindow):
         
         # Iniciamos prueba de RFID
         self.runRFID()
+        self.runQuectel()
         
         # Iniciamos comunicación con serial
         try:
