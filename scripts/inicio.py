@@ -22,12 +22,12 @@ class principal(QMainWindow):
         uic.loadUi("../ui/inicio.ui", self)
         
         # Conectar los botones con sus funciones
-        self.label_img_reiniciar_prueba.clicked.connect(self.reiniciar_prueba)
-        self.label_reiniciar_prueba.clicked.connect(self.reiniciar_prueba)
-        self.label_img_reiniciar_raspberry.clicked.connect(self.reiniciar_raspberry)
-        self.label_reiniciar_raspberry.clicked.connect(self.reiniciar_raspberry)
-        self.label_img_apagar.clicked.connect(self.apagar_raspberry)
-        self.label_apagar.clicked.connect(self.apagar_raspberry)
+        self.label_img_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
+        self.label_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
+        self.label_img_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
+        self.label_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
+        self.label_img_apagar.mousePressEvent = self.apagar_raspberry
+        self.label_apagar.mousePressEvent = self.apagar_raspberry
         
         # Iniciamos pruebas
         self.verificar_memoria_eeprom()
@@ -39,13 +39,13 @@ class principal(QMainWindow):
         else:
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
         
-    def reiniciar_prueba(self):
+    def reiniciar_prueba(self, event):
         print("Reiniciar prueba")
         
-    def reiniciar_raspberry(self):
+    def reiniciar_raspberry(self, event):
         print("Reiniciar raspberry")
         
-    def apagar_raspberry(self):
+    def apagar_raspberry(self, event):
         print("Apagar raspberry")        
     
 if __name__ == '__main__':
