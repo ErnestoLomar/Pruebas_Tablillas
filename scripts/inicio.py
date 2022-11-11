@@ -237,9 +237,11 @@ class principal(QMainWindow):
         
     def reiniciar_raspberry(self, event):
         print("Reiniciar raspberry")
+        subprocess.run("sudo reboot", shell=True)
         
     def apagar_raspberry(self, event):
-        print("Apagar raspberry")        
+        print("Apagar raspberry")
+        subprocess.run("sudo shutdown -h now", shell=True)      
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
