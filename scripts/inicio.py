@@ -75,7 +75,7 @@ class principal(QMainWindow):
             
     def reportProgressRIFD(self, res: dict):
         try:
-            if 'UID' in res.decode():
+            if 'UID' in res["estado"]:
                 self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
                 print("RFID correcto")
             else:
