@@ -31,6 +31,8 @@ class RFIDWorker(QObject):
             print("Iniciando prueba RFID")
             estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
             self.progress.emit({"estado": estado.stdout.decode()})
+            if "UID" in estado.stdout.decode():
+                break
 
 class principal(QMainWindow):
     def __init__(self):
@@ -79,11 +81,6 @@ class principal(QMainWindow):
     def reportProgressRIFD(self, res: dict):
         try:
             if 'UID' in res["estado"]:
-                self.label_resultado_rfid.setPixmap(QPixmap(""))
-                time.sleep(.5)
-                self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
-                print("RFID correcto")
-            elif 'Success' in res["estado"]:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 time.sleep(.5)
                 self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
