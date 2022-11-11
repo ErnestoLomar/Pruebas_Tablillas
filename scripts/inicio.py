@@ -83,6 +83,11 @@ class principal(QMainWindow):
                 time.sleep(.5)
                 self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
                 print("RFID correcto")
+            elif 'Success' in res["estado"]:
+                self.label_resultado_rfid.setPixmap(QPixmap(""))
+                time.sleep(.5)
+                self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
+                print("RFID correcto")
             else:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 time.sleep(.5)
