@@ -95,6 +95,7 @@ class QuectelWorker(QObject):
                     diccionario['Latitud'] = Latitud
                     diccionario['Longitud'] = Longitud
                 else:
+                    respuesta = respuesta.decode()
                     comando = respuesta.replace("+CME ERROR: ", "")
                     comando = comando.rstrip("\r\n")
                     diccionario['error'] = comando
