@@ -47,13 +47,13 @@ class QuectelWorker(QObject):
     def run(self):
         diccionario = {}
         while True:
+            print("Iniciando prueba Quectel")
             self.ser.flushInput()
             self.ser.flushOutput()
             comando = "AT\r\n"
-            self.ser.readline()
+            print("Enviando comando: " + comando)
             self.ser.write(comando.encode())
             time.sleep(1)
-            print(self.ser.readline())
             respuesta = self.ser.readline()
             diccionario['AT'] = respuesta.decode()
             if 'OK' in respuesta.decode():
@@ -63,6 +63,7 @@ class QuectelWorker(QObject):
                 self.ser.flushInput()
                 self.ser.flushOutput()
                 comando = "AT+CSQ\r\n"
+                print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
                 time.sleep(1)
                 respuesta = self.ser.readline()
@@ -71,6 +72,7 @@ class QuectelWorker(QObject):
                 self.ser.flushInput()
                 self.ser.flushOutput()
                 comando = "AT+QGPSLOC=2\r\n"
+                print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
                 time.sleep(1)
                 respuesta = self.ser.readline()
@@ -88,11 +90,13 @@ class QuectelWorker(QObject):
                 self.ser.flushInput()
                 self.ser.flushOutput()
                 comando = "AT+CCID\r\n"
+                print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
                 time.sleep(1)
                 respuesta = self.ser.readline()
                 diccionario['CCID'] = respuesta.decode()
                 
+                print("Finalizando prueba Quectel")
                 return diccionario
             else:
                 print("Error en el comando AT")
