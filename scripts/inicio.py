@@ -8,6 +8,7 @@
 ##########################################
 
 # Librerías importadas
+import subprocess
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import *
@@ -36,8 +37,14 @@ class principal(QMainWindow):
         estado = cargar_num_serie()
         if 'ERR' in str(estado['state_num_serie']) or 'NSxxxxx' in str(estado['state_num_serie']) and 'ERR' in str(estado['state_num_version']) or 'NVxxxxx' in str(estado['state_num_version']):
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/incorrecto.png"))
+            print("Error en la memoria EEPROM")
         else:
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
+            print("Memoria EEPROM correcta")
+            
+    def verificar_rfid(self):
+        estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
+        print(estado.stdout.decode())
         
     def reiniciar_prueba(self, event):
         print("Reiniciar prueba")

@@ -253,7 +253,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../img/reiniciar_prueba.webp</pixmap>
+     <pixmap>../img/reiniciar_prueba.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -272,7 +272,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../img/reiniciar_raspberry.webp</pixmap>
+     <pixmap>../img/reiniciar_raspberry.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
