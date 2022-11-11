@@ -9,6 +9,7 @@
 
 # Librerías importadas
 import subprocess
+import time
 from PyQt5 import uic, QtCore
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import *
@@ -26,8 +27,10 @@ class RFIDWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
-        self.progress.emit({"estado": estado.stdout.decode()})
+        while True:
+            print("Iniciando prueba RFID")
+            estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
+            self.progress.emit({"estado": estado.stdout.decode()})
 
 class principal(QMainWindow):
     def __init__(self):
@@ -76,10 +79,14 @@ class principal(QMainWindow):
     def reportProgressRIFD(self, res: dict):
         try:
             if 'UID' in res["estado"]:
-                self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
+                self.label_resultado_rfid.setPixmap(QPixmap(""))
+                time.sleep(.5)
+                self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
                 print("RFID correcto")
             else:
-                self.label_resultado_eeprom.setPixmap(QPixmap("../img/incorrecto.png"))
+                self.label_resultado_rfid.setPixmap(QPixmap(""))
+                time.sleep(.5)
+                self.label_resultado_rfid.setPixmap(QPixmap("../img/incorrecto.png"))
                 print("RFID incorrecto")
         except Exception as e:
             print("inicio.py, linea 160: "+str(e))
