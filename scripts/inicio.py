@@ -95,6 +95,9 @@ class QuectelWorker(QObject):
                     diccionario['Latitud'] = Latitud
                     diccionario['Longitud'] = Longitud
                 else:
+                    comando = respuesta.replace("+CME ERROR: ", "")
+                    comando = comando.rstrip("\r\n")
+                    diccionario['CCID'] = comando
                     diccionario['error'] = respuesta.decode()
                     
                 self.ser.flushInput()
@@ -220,6 +223,7 @@ class principal(QMainWindow):
                     else:
                         self.label_latitud.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
                         self.label_latitud.setText(res["error"])
+                        self.label_longitud.setText("")
                     if ("CCID" in res.keys()):
                         self.label_numero_sim.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                         self.label_numero_sim.setText(res["CCID"])
