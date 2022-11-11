@@ -444,9 +444,9 @@
    <widget class="QLabel" name="label_numero_sim">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>620</x>
       <y>340</y>
-      <width>171</width>
+      <width>181</width>
       <height>31</height>
      </rect>
     </property>
