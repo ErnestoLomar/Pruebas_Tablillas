@@ -17,7 +17,14 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
 import serial
+import RPi.GPIO as GPIO
 from eeprom_num_serie import cargar_num_serie
+
+try:
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(12, GPIO.OUT)
+except Exception as e:
+    print("No se pudo inicializar el ventilador: "+str(e))
 
 class RFIDWorker(QObject):
     def __init__(self):
@@ -122,6 +129,22 @@ class QuectelWorker(QObject):
                 print(respuesta)
                 diccionario['AT'] = respuesta.decode()
                 self.progress.emit(diccionario)
+                
+class ZuLedsWorker(QObject):
+    def __init__(self):
+        super().__init__()
+        pass
+    
+    finished = pyqtSignal()
+    progress = pyqtSignal(dict)
+    
+    def run(self):
+        while True:
+            print("Iniciando prueba de Zumbador y Leds")
+            GPIO.output(12, True)
+            time.sleep(0.2)
+            GPIO.output(12, False)
+            time.sleep(3)
 
 class principal(QMainWindow):
     def __init__(self):
@@ -230,6 +253,26 @@ class principal(QMainWindow):
             else:
                 self.label_estado_quectel.setStyleSheet('color: #CB4335; font: 16pt "Franklin Gothic Medium";')
                 self.label_estado_quectel.setText(res["AT"])
+        except Exception as e:
+            print("inicio.py, linea 160: "+str(e))
+            
+    def runZumbadorLeds(self):
+        try:
+            self.zuledsThread = QThread()
+            self.zuledsWorker = ZuLedsWorker()
+            self.zuledsWorker.moveToThread(self.zuledsThread)
+            self.zuledsThread.started.connect(self.zuledsWorker.run)
+            self.zuledsWorker.finished.connect(self.zuledsThread.quit)
+            self.zuledsWorker.finished.connect(self.zuledsWorker.deleteLater)
+            self.zuledsThread.finished.connect(self.zuledsThread.deleteLater)
+            self.zuledsWorker.progress.connect(self.reportProgressZuLeds)
+            self.zuledsThread.start()
+        except Exception as e:
+            print("Error al iniciar el hilo de RFID: " + str(e))
+            
+    def reportProgressZuLeds(self, res: dict):
+        try:
+            pass
         except Exception as e:
             print("inicio.py, linea 160: "+str(e))
         
