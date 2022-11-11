@@ -45,8 +45,8 @@ class QuectelWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        diccionario = {}
         while True:
+            diccionario = {}
             print("Iniciando prueba Quectel")
             self.ser.flushInput()
             self.ser.flushOutput()
