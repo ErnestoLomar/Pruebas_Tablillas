@@ -18,6 +18,8 @@ from PyQt5.QtWidgets import *
 import sys
 import serial
 import RPi.GPIO as GPIO
+import board
+import neopixel
 from eeprom_num_serie import cargar_num_serie
 
 try:
@@ -139,8 +141,17 @@ class ZuLedsWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
+        pixels = neopixel.NeoPixel(board.D21, 4, brightness=0.1, auto_write=False, pixel_order=neopixel.GRB)
         while True:
             print("Iniciando prueba de Zumbador y Leds")
+            pixels[0] = (255, 0, 0)
+            pixels[1] = (255, 0, 0)
+            pixels[2] = (255, 0, 0)
+            pixels[3] = (255, 0, 0)
+            pixels.show()
+            time.sleep(2)
+
+            
             GPIO.output(12, True)
             time.sleep(0.2)
             GPIO.output(12, False)
