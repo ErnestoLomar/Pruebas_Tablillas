@@ -174,6 +174,7 @@ class principal(QMainWindow):
         # Iniciamos prueba de RFID
         self.runRFID()
         self.runQuectel()
+        self.runZumbadorLeds()
         
     def verificar_memoria_eeprom(self):
         estado = cargar_num_serie()
