@@ -109,6 +109,13 @@ class principal(QMainWindow):
         # Cargar la interfaz gráfica
         uic.loadUi("../ui/inicio.ui", self)
         
+        # Iniciamos comunicación con serial
+        try:
+            self.ser = serial.Serial('/dev/serial0', 115200, timeout=1)
+        except Exception as e:
+            print("Error al abrir el puerto serial: ", e)
+            self.label_estado_quectel.setTexts(str(e))
+        
         # Conectar los botones con sus funciones
         self.label_img_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
         self.label_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
@@ -123,13 +130,6 @@ class principal(QMainWindow):
         # Iniciamos prueba de RFID
         self.runRFID()
         self.runQuectel()
-        
-        # Iniciamos comunicación con serial
-        try:
-            self.ser = serial.Serial('/dev/serial0', 115200, timeout=1)
-        except Exception as e:
-            print("Error al abrir el puerto serial: ", e)
-            self.label_estado_quectel.setTexts(str(e))
         
     def verificar_memoria_eeprom(self):
         estado = cargar_num_serie()
@@ -152,7 +152,7 @@ class principal(QMainWindow):
             self.rfidWorker.progress.connect(self.reportProgressRIFD)
             self.rfidThread.start()
         except Exception as e:
-            print("Error al iniciar el hilo de minicom: " + str(e))
+            print("Error al iniciar el hilo de RFID: " + str(e))
             
     def reportProgressRIFD(self, res: dict):
         try:
@@ -184,7 +184,7 @@ class principal(QMainWindow):
             self.quectelWorker.progress.connect(self.reportProgressQuectel)
             self.quectelThread.start()
         except Exception as e:
-            print("Error al iniciar el hilo de minicom: " + str(e))
+            print("Error al iniciar el hilo de quectel: " + str(e))
             
     def reportProgressQuectel(self, res: dict):
         try:
