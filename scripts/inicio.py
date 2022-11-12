@@ -243,7 +243,7 @@ class principal(QMainWindow):
                 print("RFID en espera")
             elif '30000' in res["estado"] and rfid_ya_verificado:
                 self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
-                print("RFID correcto")
+                print("RFID ya verificado")
             else:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 time.sleep(.5)
