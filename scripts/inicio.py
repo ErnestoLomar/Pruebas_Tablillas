@@ -203,6 +203,7 @@ class principal(QMainWindow):
         self.label_img_apagar.mousePressEvent = self.apagar_raspberry
         self.label_apagar.mousePressEvent = self.apagar_raspberry
         #self.label_reiniciando_prueba.hide()
+        self.frame.hide()
         
         # Iniciamos prueba de memoria EEPROM
         self.verificar_memoria_eeprom()
