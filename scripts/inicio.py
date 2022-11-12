@@ -243,7 +243,7 @@ class principal(QMainWindow):
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
             print("Memoria EEPROM correcta")
             
-    def runReiniciar(self):
+    def runReiniciar(self, event):
         try:
             self.reiniciarThread = QThread()
             self.reiniciarWorker = ReiniciarWorker(self.frame)
