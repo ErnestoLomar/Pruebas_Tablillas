@@ -457,43 +457,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>-1</x>
-      <y>90</y>
-      <width>801</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QLabel" name="label_reiniciando_prueba">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>801</width>
-       <height>281</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(132, 179, 71);
-color: rgb(255, 255, 255);
-font: 42pt &quot;Franklin Gothic Book&quot;;</string>
-     </property>
-     <property name="text">
-      <string>Reiniciando prueba...</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </widget>
   </widget>
  </widget>
  <resources/>

@@ -22,28 +22,6 @@ import board
 import digitalio
 import neopixel
 
-reiniciar_prueba = False
-reiniciar_rfid = False
-
-class ReiniciarWorker(QObject):
-    def __init__(self, frame):
-        super().__init__()
-        self.frame = frame
-    
-    finished = pyqtSignal()
-    progress = pyqtSignal(dict)
-    
-    def run(self):
-        global reiniciar_rfid, reiniciar_prueba
-        print("Reiniciar prueba")
-        reiniciar_prueba = True
-        self.frame.show()
-        while True:
-            if reiniciar_rfid:
-                reiniciar_rfid = False
-                self.progress.emit({"reiniciar_rfid": True})
-                break
-
 class RFIDWorker(QObject):
     def __init__(self):
         super().__init__()
@@ -53,16 +31,10 @@ class RFIDWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        global reiniciar_prueba, reiniciar_rfid
         while True:
             print("Iniciando prueba RFID")
             estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
             self.progress.emit({"estado": estado.stdout.decode()})
-            if "UID" in estado.stdout.decode() or reiniciar_prueba:
-                print("Finalizando prueba RFID")
-                reiniciar_rfid = True
-                break
-            
 class QuectelWorker(QObject):
     def __init__(self, ser):
         super().__init__()
@@ -216,14 +188,12 @@ class principal(QMainWindow):
             self.label_estado_quectel.setTexts(str(e))
         
         # Conectar los botones con sus funciones
-        self.label_img_reiniciar_prueba.mousePressEvent = self.runReiniciar
-        self.label_reiniciar_prueba.mousePressEvent = self.runReiniciar
+        self.label_img_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
+        self.label_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
         self.label_img_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
         self.label_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
         self.label_img_apagar.mousePressEvent = self.apagar_raspberry
         self.label_apagar.mousePressEvent = self.apagar_raspberry
-        #self.label_reiniciando_prueba.hide()
-        self.frame.hide()
         
         # Iniciamos prueba de memoria EEPROM
         self.verificar_memoria_eeprom()
@@ -241,31 +211,6 @@ class principal(QMainWindow):
         else:
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
             print("Memoria EEPROM correcta")
-            
-    def runReiniciar(self, event):
-        try:
-            self.reiniciarThread = QThread()
-            self.reiniciarWorker = ReiniciarWorker(self.frame)
-            self.reiniciarWorker.moveToThread(self.reiniciarThread)
-            self.reiniciarThread.started.connect(self.reiniciarWorker.run)
-            self.reiniciarWorker.finished.connect(self.reiniciarThread.quit)
-            self.reiniciarWorker.finished.connect(self.reiniciarWorker.deleteLater)
-            self.reiniciarThread.finished.connect(self.reiniciarThread.deleteLater)
-            self.reiniciarWorker.progress.connect(self.reportProgressReiniciar)
-            self.reiniciarThread.start()
-        except Exception as e:
-            print("Error al iniciar el hilo de RFID: " + str(e))
-            
-    def reportProgressReiniciar(self, res: dict):
-        try:
-            if res["reiniciar_rfid"] == True:
-                self.frame.hide()
-                self.verificar_memoria_eeprom()
-                time.sleep(5)
-                self.reiniciar_rfid = self.runRFID()
-                print("Prueba reiniciada")
-        except Exception as e:
-            print("inicio.py, linea 270: "+str(e))
             
     def runRFID(self):
         try:
@@ -361,11 +306,21 @@ class principal(QMainWindow):
         
     def reiniciar_raspberry(self, event):
         print("Reiniciar raspberry")
+        zumbador = digitalio.DigitalInOut(board.D18)
+        zumbador.direction = digitalio.Direction.OUTPUT
+        zumbador.value = False
         subprocess.run("sudo reboot", shell=True)
         
     def apagar_raspberry(self, event):
         print("Apagar raspberry")
-        subprocess.run("sudo shutdown -h now", shell=True)      
+        zumbador = digitalio.DigitalInOut(board.D18)
+        zumbador.direction = digitalio.Direction.OUTPUT
+        zumbador.value = False
+        subprocess.run("sudo shutdown -h now", shell=True)     
+        
+    def reiniciar_prueba(self, event):
+        print("Reiniciar prueba")
+        self.verificar_memoria_eeprom()
     
 if __name__ == '__main__':
     app = QApplication(sys.argv)
