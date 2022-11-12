@@ -484,7 +484,7 @@
      <property name="styleSheet">
       <string notr="true">background-color: rgb(132, 179, 71);
 color: rgb(255, 255, 255);
-font: 40pt &quot;Impact&quot;;</string>
+font: 42pt &quot;Franklin Gothic Book&quot;;</string>
      </property>
      <property name="text">
       <string>Reiniciando prueba...</string>

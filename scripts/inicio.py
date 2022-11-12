@@ -62,7 +62,6 @@ class RFIDWorker(QObject):
                 print("Finalizando prueba RFID")
                 reiniciar_rfid = True
                 break
-        print("Reiniciando prueba RFID")
             
 class QuectelWorker(QObject):
     def __init__(self, ser):
