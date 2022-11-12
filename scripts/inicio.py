@@ -22,6 +22,8 @@ import board
 import digitalio
 import neopixel
 
+rfid_ya_verificado = False
+
 class RFIDWorker(QObject):
     def __init__(self):
         super().__init__()
@@ -229,15 +231,20 @@ class principal(QMainWindow):
             
     def reportProgressRIFD(self, res: dict):
         try:
+            global rfid_ya_verificado
             self.label_resultado_rfid.show()
             if 'UID' in res["estado"]:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 time.sleep(.5)
                 self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
+                rfid_ya_verificado = True
                 print("RFID correcto")
-            elif '30000' in res["estado"]:
+            elif '30000' in res["estado"] and rfid_ya_verificado == False:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 print("RFID en espera")
+            elif '30000' in res["estado"] and rfid_ya_verificado:
+                self.label_resultado_rfid.setPixmap(QPixmap("../img/comprobado.png"))
+                print("RFID correcto")
             else:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 time.sleep(.5)
@@ -327,6 +334,7 @@ class principal(QMainWindow):
         
     def reiniciar_prueba(self, event):
         print("Reiniciar prueba")
+        global rfid_ya_verificado
         self.label_resultado_eeprom.hide()
         self.label_resultado_rfid.hide()
         self.label_estado_quectel.hide()
@@ -334,6 +342,7 @@ class principal(QMainWindow):
         self.label_latitud.hide()
         self.label_longitud.hide()
         self.label_numero_sim.hide()
+        rfid_ya_verificado = False
         self.verificar_memoria_eeprom()
     
 if __name__ == '__main__':
