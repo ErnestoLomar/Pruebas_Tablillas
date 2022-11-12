@@ -22,6 +22,8 @@ import board
 import digitalio
 import neopixel
 
+reiniciar_prueba = False
+
 class RFIDWorker(QObject):
     def __init__(self):
         super().__init__()
@@ -31,7 +33,8 @@ class RFIDWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        while True:
+        global reiniciar_prueba
+        while True and not reiniciar_prueba:
             print("Iniciando prueba RFID")
             estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
             self.progress.emit({"estado": estado.stdout.decode()})
@@ -48,7 +51,8 @@ class QuectelWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        while True:
+        global reiniciar_prueba
+        while True and not reiniciar_prueba:
             diccionario = {}
             print("Iniciando prueba Quectel")
             self.ser.flushInput()
@@ -138,7 +142,8 @@ class ZuLedsWorker(QObject):
         pixels = neopixel.NeoPixel(board.D21, 4, brightness=0.1, auto_write=False, pixel_order=neopixel.GRB)
         zumbador = digitalio.DigitalInOut(board.D18)
         zumbador.direction = digitalio.Direction.OUTPUT
-        while True:
+        global reiniciar_prueba
+        while True and not reiniciar_prueba:
             print("Iniciando prueba de Zumbador y Leds")
             
             zumbador.value = True
@@ -175,6 +180,7 @@ class ZuLedsWorker(QObject):
                         pixels[3] = (0, 0, 255-j)
                         pixels.show()
                         time.sleep(0.01)
+            time.sleep(3)
 
 class principal(QMainWindow):
     def __init__(self):
@@ -309,6 +315,12 @@ class principal(QMainWindow):
         
     def reiniciar_prueba(self, event):
         print("Reiniciar prueba")
+        global reiniciar_prueba
+        reiniciar_prueba = True
+        self.verificar_memoria_eeprom()
+        self.runRFID()
+        self.runQuectel()
+        self.runZumbadorLeds()
         
     def reiniciar_raspberry(self, event):
         print("Reiniciar raspberry")
