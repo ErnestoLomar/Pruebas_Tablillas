@@ -204,6 +204,7 @@ class principal(QMainWindow):
         self.runZumbadorLeds()
         
     def verificar_memoria_eeprom(self):
+        self.label_resultado_eeprom.show()
         estado = cargar_num_serie()
         if 'ERR' in str(estado['state_num_serie']) or 'NSxxxxx' in str(estado['state_num_serie']) and 'ERR' in str(estado['state_num_version']) or 'NVxxxxx' in str(estado['state_num_version']):
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/incorrecto.png"))
@@ -228,6 +229,7 @@ class principal(QMainWindow):
             
     def reportProgressRIFD(self, res: dict):
         try:
+            self.label_resultado_rfid.show()
             if 'UID' in res["estado"]:
                 self.label_resultado_rfid.setPixmap(QPixmap(""))
                 time.sleep(.5)
@@ -260,6 +262,11 @@ class principal(QMainWindow):
             
     def reportProgressQuectel(self, res: dict):
         try:
+            self.label_estado_quectel.show()
+            self.label_intensidad_sim.show()
+            self.label_latitud.show()
+            self.label_longitud.show()
+            self.label_numero_sim.show()
             if 'OK' in res["AT"]:
                 self.label_estado_quectel.setStyleSheet('color: #7cfc00; font: 16pt "Franklin Gothic Medium";')
                 self.label_estado_quectel.setText("Iniciando...")
