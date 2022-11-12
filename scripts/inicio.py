@@ -217,8 +217,8 @@ class principal(QMainWindow):
             self.label_estado_quectel.setTexts(str(e))
         
         # Conectar los botones con sus funciones
-        self.label_img_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
-        self.label_reiniciar_prueba.mousePressEvent = self.reiniciar_prueba
+        self.label_img_reiniciar_prueba.mousePressEvent = self.runReiniciar
+        self.label_reiniciar_prueba.mousePressEvent = self.runReiniciar
         self.label_img_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
         self.label_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
         self.label_img_apagar.mousePressEvent = self.apagar_raspberry
