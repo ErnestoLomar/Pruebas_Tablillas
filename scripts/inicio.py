@@ -41,7 +41,6 @@ class RFIDWorker(QObject):
             if "UID" in estado.stdout.decode():
                 print("Finalizando prueba RFID")
                 break
-            global reiniciar_prueba
         print("Reiniciando prueba RFID")
             
 class QuectelWorker(QObject):
