@@ -320,6 +320,14 @@ class principal(QMainWindow):
         
     def reiniciar_prueba(self, event):
         print("Reiniciar prueba")
+        self.label_resultado_eeprom.hide()
+        self.label_resultado_rfid.hide()
+        self.label_estado_quectel.hide()
+        self.label_intensidad_sim.hide()
+        self.label_latitud.hide()
+        self.label_longitud.hide()
+        self.label_numero_sim.hide()
+        time.sleep(3)
         self.verificar_memoria_eeprom()
     
 if __name__ == '__main__':
