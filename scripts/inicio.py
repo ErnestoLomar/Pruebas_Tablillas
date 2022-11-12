@@ -41,6 +41,8 @@ class RFIDWorker(QObject):
             if "UID" in estado.stdout.decode():
                 print("Finalizando prueba RFID")
                 break
+            global reiniciar_prueba
+        print("Reiniciando prueba RFID")
             
 class QuectelWorker(QObject):
     def __init__(self, ser):
@@ -51,8 +53,7 @@ class QuectelWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        global reiniciar_prueba
-        while True and not reiniciar_prueba:
+        while True:
             diccionario = {}
             print("Iniciando prueba Quectel")
             self.ser.flushInput()
@@ -142,8 +143,7 @@ class ZuLedsWorker(QObject):
         pixels = neopixel.NeoPixel(board.D21, 4, brightness=0.1, auto_write=False, pixel_order=neopixel.GRB)
         zumbador = digitalio.DigitalInOut(board.D18)
         zumbador.direction = digitalio.Direction.OUTPUT
-        global reiniciar_prueba
-        while True and not reiniciar_prueba:
+        while True:
             print("Iniciando prueba de Zumbador y Leds")
             
             zumbador.value = True
@@ -203,6 +203,7 @@ class principal(QMainWindow):
         self.label_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
         self.label_img_apagar.mousePressEvent = self.apagar_raspberry
         self.label_apagar.mousePressEvent = self.apagar_raspberry
+        self.label_reiniciando_prueba.hide()
         
         # Iniciamos prueba de memoria EEPROM
         self.verificar_memoria_eeprom()
@@ -317,10 +318,11 @@ class principal(QMainWindow):
         print("Reiniciar prueba")
         global reiniciar_prueba
         reiniciar_prueba = True
+        self.label_reiniciando_prueba.show()
+        time.sleep(8)
+        self.label_reiniciando_prueba.hide()
         self.verificar_memoria_eeprom()
         self.runRFID()
-        self.runQuectel()
-        self.runZumbadorLeds()
         
     def reiniciar_raspberry(self, event):
         print("Reiniciar raspberry")
