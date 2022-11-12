@@ -343,6 +343,10 @@ class principal(QMainWindow):
         zumbador.value = True
         time.sleep(0.1)
         zumbador.value = False
+        time.sleep(0.1)
+        zumbador.value = True
+        time.sleep(0.1)
+        zumbador.value = False
         global rfid_ya_verificado
         self.label_resultado_eeprom.hide()
         self.label_resultado_rfid.hide()
