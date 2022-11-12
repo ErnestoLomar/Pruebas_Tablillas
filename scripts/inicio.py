@@ -334,7 +334,6 @@ class principal(QMainWindow):
         self.label_latitud.hide()
         self.label_longitud.hide()
         self.label_numero_sim.hide()
-        time.sleep(3)
         self.verificar_memoria_eeprom()
     
 if __name__ == '__main__':
