@@ -23,6 +23,26 @@ import digitalio
 import neopixel
 
 reiniciar_prueba = False
+reiniciar_rfid = False
+
+class ReiniciarWorker(QObject):
+    def __init__(self, frame):
+        super().__init__()
+        self.frame = frame
+    
+    finished = pyqtSignal()
+    progress = pyqtSignal(dict)
+    
+    def run(self):
+        global reiniciar_rfid, reiniciar_prueba
+        print("Reiniciar prueba")
+        reiniciar_prueba = True
+        self.frame.show()
+        while True:
+            if reiniciar_rfid:
+                reiniciar_rfid = False
+                self.progress.emit({"reiniciar_rfid": True})
+                break
 
 class RFIDWorker(QObject):
     def __init__(self):
@@ -33,13 +53,14 @@ class RFIDWorker(QObject):
     progress = pyqtSignal(dict)
     
     def run(self):
-        global reiniciar_prueba
-        while True and not reiniciar_prueba:
+        global reiniciar_prueba, reiniciar_rfid
+        while True:
             print("Iniciando prueba RFID")
             estado = subprocess.run("nfc-poll", stdout=subprocess.PIPE, shell=True)
             self.progress.emit({"estado": estado.stdout.decode()})
-            if "UID" in estado.stdout.decode():
+            if "UID" in estado.stdout.decode() or reiniciar_prueba:
                 print("Finalizando prueba RFID")
+                reiniciar_rfid = True
                 break
         print("Reiniciando prueba RFID")
             
@@ -222,6 +243,30 @@ class principal(QMainWindow):
             self.label_resultado_eeprom.setPixmap(QPixmap("../img/comprobado.png"))
             print("Memoria EEPROM correcta")
             
+    def runReiniciar(self):
+        try:
+            self.reiniciarThread = QThread()
+            self.reiniciarWorker = ReiniciarWorker(self.frame)
+            self.reiniciarWorker.moveToThread(self.reiniciarThread)
+            self.reiniciarThread.started.connect(self.reiniciarWorker.run)
+            self.reiniciarWorker.finished.connect(self.reiniciarThread.quit)
+            self.reiniciarWorker.finished.connect(self.reiniciarWorker.deleteLater)
+            self.reiniciarThread.finished.connect(self.reiniciarThread.deleteLater)
+            self.reiniciarWorker.progress.connect(self.reportProgressReiniciar)
+            self.reiniciarThread.start()
+        except Exception as e:
+            print("Error al iniciar el hilo de RFID: " + str(e))
+            
+    def reportProgressReiniciar(self, res: dict):
+        try:
+            if res["reiniciar_rfid"] == True:
+                self.frame.hide()
+                self.verificar_memoria_eeprom()
+                self.runRFID()
+                print("Prueba reiniciada")
+        except Exception as e:
+            print("inicio.py, linea 270: "+str(e))
+            
     def runRFID(self):
         try:
             self.rfidThread = QThread()
@@ -313,16 +358,6 @@ class principal(QMainWindow):
             pass
         except Exception as e:
             print("inicio.py, linea 160: "+str(e))
-        
-    def reiniciar_prueba(self, event):
-        print("Reiniciar prueba")
-        global reiniciar_prueba
-        reiniciar_prueba = True
-        self.frame.show()
-        time.sleep(8)
-        self.frame.hide()
-        self.verificar_memoria_eeprom()
-        self.runRFID()
         
     def reiniciar_raspberry(self, event):
         print("Reiniciar raspberry")
