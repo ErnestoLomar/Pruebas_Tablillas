@@ -202,7 +202,7 @@ class principal(QMainWindow):
         self.label_reiniciar_raspberry.mousePressEvent = self.reiniciar_raspberry
         self.label_img_apagar.mousePressEvent = self.apagar_raspberry
         self.label_apagar.mousePressEvent = self.apagar_raspberry
-        self.label_reiniciando_prueba.hide()
+        #self.label_reiniciando_prueba.hide()
         
         # Iniciamos prueba de memoria EEPROM
         self.verificar_memoria_eeprom()
@@ -317,9 +317,9 @@ class principal(QMainWindow):
         print("Reiniciar prueba")
         global reiniciar_prueba
         reiniciar_prueba = True
-        self.label_reiniciando_prueba.show()
+        self.frame.show()
         time.sleep(8)
-        self.label_reiniciando_prueba.hide()
+        self.frame.hide()
         self.verificar_memoria_eeprom()
         self.runRFID()
         
