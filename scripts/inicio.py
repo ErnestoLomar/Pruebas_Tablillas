@@ -52,7 +52,7 @@ class QuectelWorker(QObject):
             self.ser.flushInput()
             self.ser.flushOutput()
             comando = "AT\r\n"
-            print("Enviando comando: " + comando)
+            #print("Enviando comando: " + comando)
             self.ser.write(comando.encode())
             self.ser.readline()
             time.sleep(1)
@@ -65,7 +65,7 @@ class QuectelWorker(QObject):
                 self.ser.flushInput()
                 self.ser.flushOutput()
                 comando = "AT+CSQ\r\n"
-                print("Enviando comando: " + comando)
+                #print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
                 self.ser.readline()
                 time.sleep(1)
@@ -82,7 +82,7 @@ class QuectelWorker(QObject):
                 self.ser.flushInput()
                 self.ser.flushOutput()
                 comando = "AT+QGPSLOC=2\r\n"
-                print("Enviando comando: " + comando)
+                #print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
                 self.ser.readline()
                 time.sleep(1)
@@ -104,7 +104,7 @@ class QuectelWorker(QObject):
                 self.ser.flushInput()
                 self.ser.flushOutput()
                 comando = "AT+CCID\r\n"
-                print("Enviando comando: " + comando)
+                #print("Enviando comando: " + comando)
                 self.ser.write(comando.encode())
                 self.ser.readline()
                 time.sleep(1)
@@ -334,6 +334,14 @@ class principal(QMainWindow):
         
     def reiniciar_prueba(self, event):
         print("Reiniciar prueba")
+        zumbador = digitalio.DigitalInOut(board.D18)
+        zumbador.direction = digitalio.Direction.OUTPUT
+        zumbador.value = True
+        time.sleep(0.002)
+        zumbador.value = False
+        zumbador.value = True
+        time.sleep(0.002)
+        zumbador.value = False
         global rfid_ya_verificado
         self.label_resultado_eeprom.hide()
         self.label_resultado_rfid.hide()
