@@ -17,16 +17,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import sys
 import serial
-import RPi.GPIO as GPIO
-import board
-import neopixel
 from eeprom_num_serie import cargar_num_serie
-
-try:
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(12, GPIO.OUT)
-except Exception as e:
-    print("No se pudo inicializar el ventilador: "+str(e))
+import board
+import digitalio
+import neopixel
 
 class RFIDWorker(QObject):
     def __init__(self):
@@ -142,20 +136,45 @@ class ZuLedsWorker(QObject):
     
     def run(self):
         pixels = neopixel.NeoPixel(board.D21, 4, brightness=0.1, auto_write=False, pixel_order=neopixel.GRB)
+        zumbador = digitalio.DigitalInOut(board.D18)
+        zumbador.direction = digitalio.Direction.OUTPUT
         while True:
             print("Iniciando prueba de Zumbador y Leds")
-            pixels[0] = (255, 0, 0)
-            pixels[1] = (255, 0, 0)
-            pixels[2] = (255, 0, 0)
-            pixels[3] = (255, 0, 0)
-            pixels.show()
-            time.sleep(2)
-
             
-            GPIO.output(12, True)
-            time.sleep(0.2)
-            GPIO.output(12, False)
-            time.sleep(3)
+            zumbador.value = True
+            time.sleep(0.1)
+            zumbador.value = False
+            
+            for i in range(5):
+                for j in range(255):
+                    if i == 1:
+                        pixels[0] = (j, 0, 0)
+                        pixels[1] = (j, 0, 0)
+                        pixels[2] = (j, 0, 0)
+                        pixels[3] = (j, 0, 0)
+                        pixels.show()
+                        time.sleep(0.01)
+                    if i == 2:
+                        pixels[0] = (255-j, j, 0)
+                        pixels[1] = (255-j, j, 0)
+                        pixels[2] = (255-j, j, 0)
+                        pixels[3] = (255-j, j, 0)
+                        pixels.show()
+                        time.sleep(0.01)
+                    if i == 3:
+                        pixels[0] = (0, 255-j, j)
+                        pixels[1] = (0, 255-j, j)
+                        pixels[2] = (0, 255-j, j)
+                        pixels[3] = (0, 255-j, j)
+                        pixels.show()
+                        time.sleep(0.01)
+                    if i == 4:
+                        pixels[0] = (0, 0, 255-j)
+                        pixels[1] = (0, 0, 255-j)
+                        pixels[2] = (0, 0, 255-j)
+                        pixels[3] = (0, 0, 255-j)
+                        pixels.show()
+                        time.sleep(0.01)
 
 class principal(QMainWindow):
     def __init__(self):
