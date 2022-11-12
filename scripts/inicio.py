@@ -337,11 +337,11 @@ class principal(QMainWindow):
         zumbador = digitalio.DigitalInOut(board.D18)
         zumbador.direction = digitalio.Direction.OUTPUT
         zumbador.value = True
-        time.sleep(0.02)
+        time.sleep(0.1)
         zumbador.value = False
-        time.sleep(0.02)
+        time.sleep(0.1)
         zumbador.value = True
-        time.sleep(0.02)
+        time.sleep(0.1)
         zumbador.value = False
         global rfid_ya_verificado
         self.label_resultado_eeprom.hide()
