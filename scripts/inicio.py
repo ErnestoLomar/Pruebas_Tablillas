@@ -173,7 +173,6 @@ class ZuLedsWorker(QObject):
                         pixels[3] = (0, 0, 255-j)
                         pixels.show()
                         time.sleep(0.01)
-            time.sleep(3)
 
 class principal(QMainWindow):
     def __init__(self):
@@ -334,19 +333,6 @@ class principal(QMainWindow):
         
     def reiniciar_prueba(self, event):
         print("Reiniciar prueba")
-        zumbador = digitalio.DigitalInOut(board.D18)
-        zumbador.direction = digitalio.Direction.OUTPUT
-        zumbador.value = True
-        time.sleep(0.1)
-        zumbador.value = False
-        time.sleep(0.1)
-        zumbador.value = True
-        time.sleep(0.1)
-        zumbador.value = False
-        time.sleep(0.1)
-        zumbador.value = True
-        time.sleep(0.1)
-        zumbador.value = False
         global rfid_ya_verificado
         self.label_resultado_eeprom.hide()
         self.label_resultado_rfid.hide()
