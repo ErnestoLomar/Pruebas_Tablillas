@@ -261,6 +261,7 @@ class principal(QMainWindow):
             if res["reiniciar_rfid"] == True:
                 self.frame.hide()
                 self.verificar_memoria_eeprom()
+                time.sleep(5)
                 self.reiniciar_rfid = self.runRFID()
                 print("Prueba reiniciada")
         except Exception as e:
